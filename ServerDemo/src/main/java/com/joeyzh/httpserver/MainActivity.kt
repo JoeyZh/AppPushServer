@@ -1,8 +1,10 @@
 package com.joeyzh.httpserver
 
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
+import com.joeyzh.pushlib.httpserver.HttpService
 import com.joeyzh.pushlib.httpserver.PushServer
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -12,15 +14,19 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        pushServer = PushServer()
+        pushServer = PushServer.newInstance()
+        startService(Intent(this, HttpService::class.java))
+        tv_notice.text = ""+pushServer!!.serverUrl
     }
 
     fun start(view: View?) {
-        pushServer!!.start()
-        tv_notice.setText("" + pushServer!!.serverUrl)
+//        pushServer!!.start()
+//        tv_notice.text = "" + pushServer!!.serverUrl
     }
 
     fun stop(view: View?) {
-        pushServer!!.close()
+//        pushServer!!.close()
+//        tv_notice.text = "" + pushServer!!.serverUrl
     }
+
 }

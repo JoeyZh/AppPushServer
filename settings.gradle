@@ -1,1 +1,1 @@
-include ':ServerDemo', ':AppPushServer'
+include ':ServerDemo', ':AppPushServer', ':pushclient'

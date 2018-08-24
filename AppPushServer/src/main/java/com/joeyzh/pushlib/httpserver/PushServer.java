@@ -1,11 +1,15 @@
 package com.joeyzh.pushlib.httpserver;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 
 import com.joey.base.util.LogUtils;
 import com.joey.base.util.NetworkUtil;
+import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.AsyncServerSocket;
 import com.koushikdutta.async.callback.CompletedCallback;
+import com.koushikdutta.async.http.Headers;
+import com.koushikdutta.async.http.body.AsyncHttpRequestBody;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
@@ -20,12 +24,14 @@ import java.util.HashMap;
 
 public class PushServer implements AppServerDelegate {
 
-    private AsyncHttpServer httpServer;
-    private HashMap<Integer, AsyncServerSocket> serverSockets;
+    private static PushServer mInstance;
+    private AsyncHttpServer mHttpServer;
+    private AsyncServerSocket mServerSocket;
     private final int DEFAULT_PORT = 9995;
     private InetAddress inetAddress;
 
     private HashMap<String, AppReceiveCallback> callbacks;
+    private int port;
 
     private HttpServerRequestCallback requestCallback = new HttpServerRequestCallback() {
         @Override
@@ -33,31 +39,45 @@ public class PushServer implements AppServerDelegate {
             handleRequest("/", request, response);
         }
     };
-    private AppServerDelegate appServerDelegate;
 
-    public PushServer() {
-        httpServer = new AsyncHttpServer();
+    public static PushServer newInstance() {
+        if (mInstance != null) {
+            return mInstance;
+        }
+        synchronized (PushServer.class) {
+            if (mInstance != null) {
+                return mInstance;
+            }
+            mInstance = new PushServer();
+            return mInstance;
+        }
+
+    }
+
+    private PushServer() {
+        mHttpServer = new AsyncHttpServer();
         callbacks = new HashMap<>();
-        serverSockets = new HashMap<>();
-        httpServer.setErrorCallback(new CompletedCallback() {
+        mHttpServer.setErrorCallback(new CompletedCallback() {
             @Override
             public void onCompleted(Exception ex) {
                 ex.printStackTrace();
                 LogUtils.e(ex.getMessage() + "出错了");
             }
         });
-        httpServer.post("/", requestCallback);
-        httpServer.get("/", requestCallback);
+        mHttpServer.post("/Message", requestCallback);
+        mHttpServer.get("/Message", requestCallback);
     }
 
     public void start(int port) {
-        AsyncServerSocket socket = httpServer.listen(port);
+        close();
+        AsyncServerSocket socket = mHttpServer.listen(port);
         while (socket == null) {
-            socket = httpServer.listen(++port);
+            socket = mHttpServer.listen(++port);
         }
-        serverSockets.put(port, socket);
+        this.port = port;
+        mServerSocket = socket;
         inetAddress = NetworkUtil.getLocalInetAddress();
-        LogUtils.a("Socket init OK：" + getServerUrl(port));
+        LogUtils.a("Socket init OK：" + getServerUrl());
     }
 
     @Override
@@ -67,24 +87,14 @@ public class PushServer implements AppServerDelegate {
 
     @Override
     public void close() {
-        httpServer.stop();
+        if (mServerSocket == null) {
+            return;
+        }
+        mServerSocket.stop();
+        AsyncServer.getDefault().stop();
+        mHttpServer.stop();
         inetAddress = null;
-    }
-
-    public void stop(int port) {
-        if (serverSockets.containsKey(port)) {
-            serverSockets.get(port).stop();
-        }
-        serverSockets.remove(port);
-        if (serverSockets.isEmpty()) {
-            close();
-        }
-    }
-
-    public void addServerDir(String dir, AppReceiveCallback callback) {
-        callbacks.put(dir, callback);
-        httpServer.post(dir, requestCallback);
-        httpServer.get(dir, requestCallback);
+        mServerSocket = null;
     }
 
     public String getHost() {
@@ -95,37 +105,26 @@ public class PushServer implements AppServerDelegate {
         return inetAddress.getHostAddress().toString();
     }
 
-    public String getServerUrl(int port) {
-        if (!serverSockets.containsKey(port)) {
-            return null;
-        }
+    public String getServerUrl() {
         if (TextUtils.isEmpty(getHost())) {
             return null;
         }
-        return String.format("http://%s:%d", getHost(), port);
+        return String.format("http://%s:%d/Message", getHost(), port);
     }
 
 
     private void handleRequest(String method, AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-        String msg = request.getBody().toString();
-        LogUtils.a("收到消息了");
+        AsyncHttpRequestBody body = request.getBody();
+        Headers headers = request.getHeaders();
+        body.get();
+        StringBuffer buffer = new StringBuffer();
+        buffer.append("收到消息了 body:" + body.get().toString() );
+        buffer.append("\n contentType :" + body.getContentType());
+        buffer.append("\n heads :" + headers.getMultiMap().toString());
+        LogUtils.a(buffer.toString());
         response.send("hello world");
         if (callbacks.containsKey(method)) {
-            callbacks.get(method).onReceiveBody(msg, null);
-        }
-    }
-
-    private class ServerRequestCallback implements HttpServerRequestCallback {
-
-        String method;
-
-        public ServerRequestCallback(String method) {
-            this.method = method;
-        }
-
-        @Override
-        public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-            handleRequest(method, request, response);
+            callbacks.get(method).onReceiveBody(body.get().toString(), null);
         }
     }
 

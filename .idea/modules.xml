@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AppPushServer/AppPushServer.iml" filepath="$PROJECT_DIR$/AppPushServer/AppPushServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HttpServer.iml" filepath="$PROJECT_DIR$/HttpServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/AppPushServer/PushLib.iml" filepath="$PROJECT_DIR$/AppPushServer/PushLib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerDemo/ServerDemo.iml" filepath="$PROJECT_DIR$/ServerDemo/ServerDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ServerDemo/app.iml" filepath="$PROJECT_DIR$/ServerDemo/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/pushclient/pushclient.iml" filepath="$PROJECT_DIR$/pushclient/pushclient.iml" />
+    </modules>
+  </component>
+</project>

@@ -9,7 +9,7 @@ public interface AppReceiveCallback {
 
     void onReceiveBody(String msg,PushError error);
 
-    void onReceiveHead(String msg,PushError error);
+//    void onReceiveHead(String msg,PushError error);
 
-    void onError();
+    void onError(PushError error);
 }

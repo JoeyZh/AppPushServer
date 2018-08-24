@@ -24,6 +24,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.joeyzh.pushlib.httpserver.HttpService">
+            <intent-filter>
+                <action android:name="android.intent.action.Boot_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="com.joeyzh.pushlib.RELIVE" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
