@@ -15,17 +15,17 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pushServer = PushServer.newInstance()
-        startService(Intent(this, HttpService::class.java))
+//        startService(Intent(this, HttpService::class.java))
         tv_notice.text = "" + pushServer!!.port
     }
 
     fun start(view: View?) {
-//        pushServer!!.start()
+        pushServer!!.start()
         tv_notice.text = pushServer!!.getHost(this)
     }
 
     fun stop(view: View?) {
-//        pushServer!!.close()
+        pushServer!!.close()
         tv_notice.text = "" + pushServer!!.port
     }
 

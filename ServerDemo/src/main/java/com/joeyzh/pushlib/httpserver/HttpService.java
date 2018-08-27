@@ -31,10 +31,10 @@ public class HttpService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-//        IntentFilter filter = new IntentFilter();
-//        filter.addAction(RELIVE_ACTION);
-//        MyReceiver receiver = new MyReceiver();
-//        registerReceiver(receiver, filter);
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(RELIVE_ACTION);
+        MyReceiver receiver = new MyReceiver();
+        registerReceiver(receiver, filter);
         delegate = PushServer.newInstance();
         delegate.start();
         LogUtils.i(PushServer.newInstance().getHost(this));

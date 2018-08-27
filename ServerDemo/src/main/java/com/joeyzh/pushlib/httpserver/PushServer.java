@@ -8,11 +8,16 @@ import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.AsyncServerSocket;
 import com.koushikdutta.async.callback.CompletedCallback;
 import com.koushikdutta.async.http.Headers;
+import com.koushikdutta.async.http.Multimap;
+import com.koushikdutta.async.http.body.AsyncHttpRequestBody;
 import com.koushikdutta.async.http.body.MultipartFormDataBody;
+import com.koushikdutta.async.http.body.UrlEncodedFormBody;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
+
+import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -35,7 +40,8 @@ public class PushServer implements AppServerDelegate {
     private HttpServerRequestCallback requestCallback = new HttpServerRequestCallback() {
         @Override
         public void onRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-            handleRequest("/", request, response);
+            parseRequest(request, response);
+//            handleRequest("/", request, response);
         }
     };
 
@@ -109,19 +115,56 @@ public class PushServer implements AppServerDelegate {
         return String.format("http://%s:%d", NetworkUtil.getLocalIpStr(context), getPort());
     }
 
-    private void handleRequest(String method, AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
-        MultipartFormDataBody body = (MultipartFormDataBody) request.getBody();
-        Headers headers = request.getHeaders();
-        body.get();
+
+    private void handleRequest(Multimap multimap, AsyncHttpServerResponse response) {
+        String result = multimap.getString("result");
+        String appId = multimap.getString("appId");
+        if (null == result) {
+            response.send("{\"message\":\"非法格式\",\"errorCode\":0}");
+        } else {
+            response.send("{\"message\":\"I have received message\",\"errorCode\":1}");
+        }
+//        AsyncHttpRequestBody body = request.getBody();
+//        Headers headers = request.getHeaders();
+//        body.get();
+//        StringBuffer buffer = new StringBuffer();
+//        buffer.append("收到消息了 body:" + body.get().toString());
+//        buffer.append("\n contentType :" + body.getContentType());
+//        buffer.append("\n heads :" + headers.getMultiMap().toString());
+//        LogUtils.a(buffer.toString());
+//        response.send("I have received message from : " + headers.getMultiMap().get("host"));
+        if (callbacks.containsKey(appId)) {
+            callbacks.get(appId).onReceiveBody(result, null);
+        }
+    }
+
+    private void parseRequest(AsyncHttpServerRequest request, AsyncHttpServerResponse response) {
+        AsyncHttpRequestBody body = request.getBody();
         StringBuffer buffer = new StringBuffer();
+        buffer.append("currentThread :" + Thread.currentThread().toString());
         buffer.append("收到消息了 body:" + body.get().toString());
         buffer.append("\n contentType :" + body.getContentType());
-        buffer.append("\n heads :" + headers.getMultiMap().toString());
+        buffer.append("\n heads :" + request.getHeaders().getMultiMap().toString());
         LogUtils.a(buffer.toString());
-        response.send("I have received message from");
-        if (callbacks.containsKey(method)) {
-            callbacks.get(method).onReceiveBody(body.get().toString(), null);
+        if (body == null) {
+            handleRequest(new Multimap(), response);
+            return;
         }
+
+        handleRequest((Multimap) body.get(), response);
+
+//        String contentType = body.getContentType();
+//        switch (contentType) {
+//            case UrlEncodedFormBody.CONTENT_TYPE:
+//            case MultipartFormDataBody.CONTENT_TYPE:
+//                Multimap multimap = (Multimap) body.get();
+//                handleRequest(multimap, response);
+//                break;
+//            default: {
+//            }
+//            break;
+//        }
+
     }
 
 }
