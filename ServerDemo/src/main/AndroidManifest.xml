@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.joeyzh.httpserver">
+    package="com.joeyzh.sample">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -25,12 +25,15 @@
             </intent-filter>
         </activity>
         <service android:name="com.joeyzh.pushlib.httpserver.HttpService">
+
+        </service>
+        <receiver android:name="com.joeyzh.pushlib.httpserver.HttpService$MyReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.Boot_COMPLETED" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="com.joeyzh.pushlib.RELIVE" />
             </intent-filter>
-        </service>
+        </receiver>
     </application>
 
 </manifest>

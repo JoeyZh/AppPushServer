@@ -1,4 +1,4 @@
-package com.joeyzh.httpserver
+package com.joeyzh.sample
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
@@ -16,17 +16,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         pushServer = PushServer.newInstance()
         startService(Intent(this, HttpService::class.java))
-        tv_notice.text = ""+pushServer!!.serverUrl
+        tv_notice.text = "" + pushServer!!.port
     }
 
     fun start(view: View?) {
 //        pushServer!!.start()
-//        tv_notice.text = "" + pushServer!!.serverUrl
+        tv_notice.text = pushServer!!.getHost(this)
     }
 
     fun stop(view: View?) {
 //        pushServer!!.close()
-//        tv_notice.text = "" + pushServer!!.serverUrl
+        tv_notice.text = "" + pushServer!!.port
     }
 
 }
