@@ -144,18 +144,6 @@ public class PushHttpServer extends AppServerDelegate {
 
         handleRequest((Multimap) body.get(), response);
 
-//        String contentType = body.getContentType();
-//        switch (contentType) {
-//            case UrlEncodedFormBody.CONTENT_TYPE:
-//            case MultipartFormDataBody.CONTENT_TYPE:
-//                Multimap multimap = (Multimap) body.get();
-//                handleRequest(multimap, response);
-//                break;
-//            default: {
-//            }
-//            break;
-//        }
-
     }
 
 }
