@@ -103,6 +103,20 @@ public class PushServer implements AppServerDelegate {
         mServerSocket = null;
     }
 
+    public void registerCallback(String appId){
+        callbacks.put(appId, new AppReceiveCallback() {
+            @Override
+            public void onReceiveBody(String msg, PushError error) {
+
+            }
+
+            @Override
+            public void onError(PushError error) {
+
+            }
+        });
+    }
+
     public int getPort() {
         return port;
     }
@@ -124,15 +138,6 @@ public class PushServer implements AppServerDelegate {
         } else {
             response.send("{\"message\":\"I have received message\",\"errorCode\":1}");
         }
-//        AsyncHttpRequestBody body = request.getBody();
-//        Headers headers = request.getHeaders();
-//        body.get();
-//        StringBuffer buffer = new StringBuffer();
-//        buffer.append("收到消息了 body:" + body.get().toString());
-//        buffer.append("\n contentType :" + body.getContentType());
-//        buffer.append("\n heads :" + headers.getMultiMap().toString());
-//        LogUtils.a(buffer.toString());
-//        response.send("I have received message from : " + headers.getMultiMap().get("host"));
         if (callbacks.containsKey(appId)) {
             callbacks.get(appId).onReceiveBody(result, null);
         }

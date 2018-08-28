@@ -1,5 +1,5 @@
 // IMessageInterface.aidl
-package com.joeyzh.pushlib.httpserver;
+package com.joeyzh.pushlib;
 
 // Declare any non-default types here with import statements
 
@@ -11,8 +11,6 @@ interface IMessageInterface {
 //    void basicTypes(int anInt, long aLong, boolean aBoolean, float aFloat,
 //            double aDouble, String aString);
 
-      void onListener(String msg,String title,String msgDecs,String url);
-
-      void onStart(String appId);
+      void onListener(String receiveMsg);
 
 }

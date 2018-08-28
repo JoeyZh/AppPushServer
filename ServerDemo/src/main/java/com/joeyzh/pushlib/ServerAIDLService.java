@@ -22,15 +22,5 @@ public class ServerAIDLService extends Service {
         return null;
     }
 
-    public IMessageInterface.Stub msgAidlStub = new IMessageInterface.Stub() {
-        @Override
-        public void onListener(String msg, String title, String msgDecs, String url) throws RemoteException {
 
-        }
-
-        @Override
-        public void onStart(String appId) throws RemoteException {
-            LogUtils.a("appId = " + appId);
-        }
-    };
 }
