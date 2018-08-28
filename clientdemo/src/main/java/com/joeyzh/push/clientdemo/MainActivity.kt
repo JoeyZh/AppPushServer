@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
 
         }
         var intent = Intent(this, ClientService::class.java)
-        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
+//        bindService(intent, serviceConnection, Context.BIND_AUTO_CREATE)
         startService(intent)
     }
 
@@ -72,6 +72,6 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        unbindService(serviceConnection)
+//        unbindService(serviceConnection)
     }
 }

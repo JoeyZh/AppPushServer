@@ -7,13 +7,12 @@ import android.content.ServiceConnection
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
+import android.util.Log
 import android.view.View
-import com.joey.base.util.LogUtils
 import com.joeyzh.pushlib.IMessageInterface
-import com.joeyzh.pushlib.httpserver.AppReceiveCallback
-import com.joeyzh.pushlib.httpserver.PushError
-import com.joeyzh.pushlib.httpserver.PushHttpServer
-import com.joeyzh.pushlib.httpserver.PushService
+import com.joeyzh.pushlib.httpserver.*
+import com.joeyzh.ui.IMessage
+import com.joeyzh.ui.NoticeCreator
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -26,28 +25,43 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pushHttpServer = PushHttpServer.newInstance()
+        // 启动服务
         startService(Intent(this, PushService::class.java))
 
+        // 配置消息显示内容
         var intent = Intent()
+        intent.action = PushService.NOTICE_INIT
+        intent.putExtra("smallIcon", R.mipmap.ic_launcher)
+        intent.putExtra("icon", R.mipmap.ic_launcher)
+        intent.putExtra("appName", "测试demo")
+        sendBroadcast(intent)
+
+        //配置远程监听服务
+        intent = Intent()
         intent!!.action = "com.joeyzh.push.clientdemo.ClientService"
         intent!!.`package` = "com.joeyzh.push.clientdemo"
         bindService(intent, stubConnection, Context.BIND_AUTO_CREATE)
-        tv_notice.text = "" + pushHttpServer!!.port
+//        tv_notice.text = "" + pushHttpServer!!.port
     }
 
     fun start(view: View?) {
-//        pushHttpServer!!.start()
         tv_notice.text = pushHttpServer!!.getHost(this)
+        Log.i("MainActivity", Thread.currentThread().toString())
+        var create = NoticeCreator(this)
+        create.setInfo(R.mipmap.ic_launcher, R.mipmap.ic_launcher, "测试")
+        var message = IMessage()
+        message.content = "一条测试记录"
+        message.title = "标题"
+        create.processCustomMessage(this, message)
     }
 
     fun stop(view: View?) {
-//        pushHttpServer!!.close()
-        tv_notice.text = "" + pushHttpServer!!.port
-        if (mStub == null) {
-            LogUtils.e("stub is null")
-            return
-        }
-        mStub!!.onListener("开始啦")
+//        tv_notice.text = "" + pushHttpServer!!.port
+//        if (mStub == null) {
+//            Log.e("MainActivity", "stub is null")
+//            return
+//        }
+//        mStub!!.onListener("开始啦")
 
     }
 
