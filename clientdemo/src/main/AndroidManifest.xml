@@ -21,10 +21,14 @@
         </activity>
 
         <service
-            android:name="com.joeyzh.push.clientdemo.ClientService"
+            android:name=".ClientService"
             android:enabled="true"
             android:exported="true"
-            android:process=":aidl" />
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.joeyzh.push.clientdemo.ClientService" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>

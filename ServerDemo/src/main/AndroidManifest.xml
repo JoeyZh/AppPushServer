@@ -25,21 +25,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.joeyzh.pushlib.httpserver.PushService">
+        <service
+            android:name="com.joeyzh.pushlib.httpserver.PushService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="com.joeyzh.pushlib.RELIVE" />
+            </intent-filter>
 
         </service>
         <receiver android:name="com.joeyzh.pushlib.httpserver.PushService$MyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
-                <action android:name="com.joeyzh.pushlib.RELIVE" />
             </intent-filter>
         </receiver>
 
-        <service android:name="com.joeyzh.pushlib.ServerAIDLService"
-            android:exported="true"
+        <service
+            android:name="com.joeyzh.pushlib.ServerAIDLService"
             android:enabled="true"
-            android:process=":aidl"/>
+            android:exported="true"
+            android:process=":remote" />
     </application>
 
 </manifest>

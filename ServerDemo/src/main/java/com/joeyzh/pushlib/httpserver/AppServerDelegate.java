@@ -7,10 +7,12 @@ import java.io.IOException;
  * APPserver的工厂模式接口
  */
 
-public interface AppServerDelegate {
+public abstract class AppServerDelegate {
 
-    void start();
+    abstract public void start();
 
-    void close();
+    abstract protected void close();
+
+    abstract public void register(String appId, AppReceiveCallback callback);
 
 }

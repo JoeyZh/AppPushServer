@@ -21,7 +21,7 @@ import java.util.HashMap;
  * Created by Joey on 2018/8/6.
  */
 
-public class PushHttpServer implements AppServerDelegate {
+public class PushHttpServer extends AppServerDelegate {
 
     private static PushHttpServer mInstance;
     private AsyncHttpServer mHttpServer;
@@ -87,7 +87,7 @@ public class PushHttpServer implements AppServerDelegate {
     }
 
     @Override
-    public void close() {
+    protected void close() {
         if (mServerSocket == null) {
             return;
         }
@@ -98,18 +98,9 @@ public class PushHttpServer implements AppServerDelegate {
         mServerSocket = null;
     }
 
-    public void registerCallback(String appId){
-        callbacks.put(appId, new AppReceiveCallback() {
-            @Override
-            public void onReceiveBody(String msg, PushError error) {
-
-            }
-
-            @Override
-            public void onError(PushError error) {
-
-            }
-        });
+    @Override
+    public void register(String appId, AppReceiveCallback callback) {
+        callbacks.put(appId, callback);
     }
 
     public int getPort() {
