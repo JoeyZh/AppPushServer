@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.view.View
 import com.joey.base.util.LogUtils
-import com.joeyzh.pushclient.IPushApiInterface
 import com.joeyzh.pushlib.IMessageInterface
 import com.joeyzh.pushlib.httpserver.AppReceiveCallback
 import com.joeyzh.pushlib.httpserver.PushError
@@ -27,20 +26,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         pushHttpServer = PushHttpServer.newInstance()
-        pushHttpServer!!.register("sunrui", object : AppReceiveCallback {
-            override fun onReceiveBody(msg: String?, error: PushError?) {
-                message = msg!!
-                if (mStub == null) {
-                    LogUtils.e("stub is null")
-                    return
-                }
-                LogUtils.a("stub listener message:" + message)
-                mStub!!.onListener(message)
-            }
-
-            override fun onError(error: PushError?) {
-            }
-        })
         startService(Intent(this, PushService::class.java))
 
         var intent = Intent()

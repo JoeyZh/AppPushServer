@@ -2,17 +2,15 @@ package com.joeyzh.pushlib.httpserver;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
+import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import com.joey.base.util.LogUtils;
-import com.joeyzh.pushclient.IPushApiInterface;
 import com.joeyzh.pushlib.IMessageInterface;
 
 /**
@@ -25,21 +23,11 @@ public class PushService extends Service {
     public static final String RELIVE_ACTION = "com.joeyzh.pushlib.RELIVE";
     private AppServerDelegate delegate;
     private final String TAG = "HttpService";
-    public IMessageInterface imsgStub;
     private MyBinder binder = new MyBinder();
     private AppReceiveCallback callback = new AppReceiveCallback() {
         @Override
         public void onReceiveBody(String msg, PushError error) {
-            if (imsgStub == null) {
-                LogUtils.e("connect failed");
-                return;
-            }
-            LogUtils.a("stub listener message:" + msg);
-            try {
-                imsgStub.onListener(msg);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }
+            Log.i(TAG, "listener message:" + msg);
         }
 
         @Override
@@ -63,10 +51,8 @@ public class PushService extends Service {
         registerReceiver(receiver, filter);
         delegate = PushHttpServer.newInstance();
         delegate.start();
-        LogUtils.i(PushHttpServer.newInstance().getHost(this));
-//        Intent intent = new Intent("com.joeyzh.push.clientdemo.ClientService");
-//        intent.setPackage("com.joeyzh.push.clientdemo");
-//        bindService(intent, connection, BIND_AUTO_CREATE);
+        delegate.register("sunrui", callback);
+        Log.i(TAG, PushHttpServer.newInstance().getHost(this));
     }
 
     @Override
@@ -93,15 +79,9 @@ public class PushService extends Service {
         }
     }
 
-
-    public class MyBinder extends IPushApiInterface.Stub {
+    public class MyBinder extends Binder {
         public PushService getService() {
             return PushService.this;
-        }
-
-        @Override
-        public void register(String appId) throws RemoteException {
-            delegate.register(appId, callback);
         }
     }
 

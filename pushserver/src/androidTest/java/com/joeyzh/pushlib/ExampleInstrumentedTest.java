@@ -1,4 +1,4 @@
-package com.joeyzh.pushserver;
+package com.joeyzh.pushlib;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

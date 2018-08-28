@@ -43,7 +43,7 @@
         </receiver>
 
         <service
-            android:name="com.joeyzh.pushlib.ServerAIDLService"
+            android:name=".ServerAIDLService"
             android:enabled="true"
             android:exported="true"
             android:process=":remote" />
