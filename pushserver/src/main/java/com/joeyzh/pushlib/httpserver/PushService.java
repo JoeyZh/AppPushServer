@@ -61,6 +61,8 @@ public class PushService extends Service implements AppReceiveCallback {
 
     @Override
     public void onReceiveBody(String msg, PushError error) {
+        Intent intent = new Intent("com.joeyzh.push.message");
+        intent.putExtra("result", msg);
         LogUtils.e(msg);
         IMessage msgObj = new IMessage();
         try {
@@ -73,12 +75,11 @@ public class PushService extends Service implements AppReceiveCallback {
                 msgObj.setDecs(object.getString("decs"));
             if (object.has("picUrl"))
                 msgObj.setPicUrl(object.getString("picUrl"));
-            Intent intent = new Intent("com.joeyzh.push.message");
             intent.putExtra("message", msgObj);
-            sendBroadcast(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        sendBroadcast(intent);
 
     }
 

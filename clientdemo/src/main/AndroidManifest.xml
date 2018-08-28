@@ -29,6 +29,12 @@
                 <action android:name="com.joeyzh.push.clientdemo.ClientService" />
             </intent-filter>
         </service>
+
+        <receiver android:name=".PushReceiver">
+            <intent-filter>
+                <action android:name="com.joeyzh.push.message" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
