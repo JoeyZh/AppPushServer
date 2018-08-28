@@ -6,15 +6,22 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
-import com.joey.base.util.LogUtils;
-import com.joeyzh.pushlib.httpserver.IMessageInterface;
-import com.joeyzh.pushlib.httpserver.PushServer;
+import com.joeyzh.pushclient.IPushApiInterface;
+
 
 /**
  * Created by Joey on 2018/8/27.
  */
 
 public class ServerAIDLService extends Service {
+
+
+    IBinder mApiBinder = new IPushApiInterface.Stub() {
+        @Override
+        public void register(String appId) throws RemoteException {
+
+        }
+    };
 
     @Nullable
     @Override

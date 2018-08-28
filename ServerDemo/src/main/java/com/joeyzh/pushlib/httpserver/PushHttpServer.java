@@ -7,17 +7,12 @@ import com.joey.base.util.NetworkUtil;
 import com.koushikdutta.async.AsyncServer;
 import com.koushikdutta.async.AsyncServerSocket;
 import com.koushikdutta.async.callback.CompletedCallback;
-import com.koushikdutta.async.http.Headers;
 import com.koushikdutta.async.http.Multimap;
 import com.koushikdutta.async.http.body.AsyncHttpRequestBody;
-import com.koushikdutta.async.http.body.MultipartFormDataBody;
-import com.koushikdutta.async.http.body.UrlEncodedFormBody;
 import com.koushikdutta.async.http.server.AsyncHttpServer;
 import com.koushikdutta.async.http.server.AsyncHttpServerRequest;
 import com.koushikdutta.async.http.server.AsyncHttpServerResponse;
 import com.koushikdutta.async.http.server.HttpServerRequestCallback;
-
-import org.json.JSONObject;
 
 import java.net.InetAddress;
 import java.util.HashMap;
@@ -26,9 +21,9 @@ import java.util.HashMap;
  * Created by Joey on 2018/8/6.
  */
 
-public class PushServer implements AppServerDelegate {
+public class PushHttpServer implements AppServerDelegate {
 
-    private static PushServer mInstance;
+    private static PushHttpServer mInstance;
     private AsyncHttpServer mHttpServer;
     private AsyncServerSocket mServerSocket;
     private final int DEFAULT_PORT = 9995;
@@ -45,21 +40,21 @@ public class PushServer implements AppServerDelegate {
         }
     };
 
-    public static PushServer newInstance() {
+    public static PushHttpServer newInstance() {
         if (mInstance != null) {
             return mInstance;
         }
-        synchronized (PushServer.class) {
+        synchronized (PushHttpServer.class) {
             if (mInstance != null) {
                 return mInstance;
             }
-            mInstance = new PushServer();
+            mInstance = new PushHttpServer();
             return mInstance;
         }
 
     }
 
-    private PushServer() {
+    private PushHttpServer() {
         mHttpServer = new AsyncHttpServer();
         callbacks = new HashMap<>();
         mHttpServer.setErrorCallback(new CompletedCallback() {

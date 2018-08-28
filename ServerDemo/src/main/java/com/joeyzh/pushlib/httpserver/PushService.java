@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 
 import com.joey.base.util.LogUtils;
@@ -15,7 +14,7 @@ import com.joey.base.util.LogUtils;
  * Created by Joey on 2018/8/24.
  */
 
-public class HttpService extends Service {
+public class PushService extends Service {
 
 
     public static final String RELIVE_ACTION = "com.joeyzh.pushlib.RELIVE";
@@ -35,9 +34,9 @@ public class HttpService extends Service {
         filter.addAction(RELIVE_ACTION);
         MyReceiver receiver = new MyReceiver();
         registerReceiver(receiver, filter);
-        delegate = PushServer.newInstance();
+        delegate = PushHttpServer.newInstance();
         delegate.start();
-        LogUtils.i(PushServer.newInstance().getHost(this));
+        LogUtils.i(PushHttpServer.newInstance().getHost(this));
     }
 
     @Override
@@ -58,7 +57,7 @@ public class HttpService extends Service {
             if (RELIVE_ACTION.equals(intent.getAction())
                     || Intent.ACTION_USER_PRESENT.equals(intent.getAction())
                     || Intent.ACTION_BOOT_COMPLETED.equals(intent.getAction())) {
-                Intent action = new Intent(context, HttpService.class);
+                Intent action = new Intent(context, PushService.class);
                 startService(action);
             }
         }

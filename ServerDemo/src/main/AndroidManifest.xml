@@ -25,16 +25,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.joeyzh.pushlib.httpserver.HttpService">
+        <service android:name="com.joeyzh.pushlib.httpserver.PushService">
 
         </service>
-        <receiver android:name="com.joeyzh.pushlib.httpserver.HttpService$MyReceiver">
+        <receiver android:name="com.joeyzh.pushlib.httpserver.PushService$MyReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
                 <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="com.joeyzh.pushlib.RELIVE" />
             </intent-filter>
         </receiver>
+
+        <service android:name="com.joeyzh.pushlib.ServerAIDLService"
+            android:exported="true"
+            android:enabled="true"
+            android:process=":aidl"/>
     </application>
 
 </manifest>
